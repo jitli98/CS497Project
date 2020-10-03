@@ -113,3 +113,35 @@ Content-Type: application/json
     "message": "Please provide username and password."
 }
 ```
+
+## Get User Profile Details
+**You send:** Username(by the API Gateway) \
+**You get:** Name, Profile Avatar, Score, 10 most recent submissions of the user, Number of accepted submissions, etc..
+
+**Request:**
+```json
+GET 127.0.0.1:6000/userProfile
+Accept: application/json
+Content-Type: application/json
+Body:
+{
+    "username": "user12345"
+}
+```
+**Successful Response:**
+```json
+200 OK
+Content-Type: application/json
+{
+    "status": "success",
+    "message": "Account has been successfully created.",
+    "data": {
+        "username": "user12345",
+        "score": 9999,
+        "recentSubmissions": [
+            null, null, null
+        ],
+        "numOfAcceptedSubmissions": 999
+    }
+}
+```

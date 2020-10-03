@@ -1,10 +1,19 @@
 
-
 exports.getUserProfile = async (req, res, next) => {
-    await console.log("Done");
+    const username = req.body.username;
+
+    // Get 10 most recent submission from SubmissionHistory MicroService
+
     res.status(200).json({
         status: "success",
-        message: "Hello World",
-        data: null        
+        message: "User Profile successfully retrieved.",
+        data: {
+            username: username,
+            score: 99999,
+            recentSubmissions: [
+                null, null, null
+            ],
+            numberOfAcceptedSubmissions: 999
+        }  
     })
 }
