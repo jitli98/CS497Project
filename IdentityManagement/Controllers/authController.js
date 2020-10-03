@@ -1,15 +1,33 @@
 const bcrypt = require('bcrypt');
 
-const saltRounds = parseInt(process.env.SALT_ROUND);
+const config = require('../config/');
+const User = require('../models/userModel');
+
+const saltRounds = parseInt(config.salt_rounds);
 
 exports.login = async (req, res, next) => {
     const [username, password] = parseAuthHeader(req);
 
-    let dbPassword = "$2b$10$Dzjzo3ZZNqs4IhNEgZ8VY.GAiGmMwTzRF4r7y0AbOS1/S8KqaugNW";
+    // Check if username & password was provided
+    if (!username || !password) {
+        return res.status(401).json({
+            status: 'fail',
+            message: 'Please provide username and password.'
+        });
+    }
+
+    const user = await User.findOne({username: username});
+    if (!user) {
+        return res.status(401).json({
+            status: "fail",
+            message: "The username or password is incorrect."
+        })
+    }
+    const userDbPassword = user.password;
 
     let match = false;
     try {
-        match = await bcrypt.compare(password, dbPassword);
+        match = await bcrypt.compare(password, userDbPassword);
     } catch (err) {
         console.log(err);
     }
@@ -25,8 +43,8 @@ exports.login = async (req, res, next) => {
     } else {
         return res.status(401).json({
             status: "fail",
-            message: "The username and password is incorrect"
-        })
+            message: "The username or password is incorrect."
+        });
     }
 }
 
@@ -34,38 +52,50 @@ exports.login = async (req, res, next) => {
 exports.signup = async (req, res, next) => {
     const [username, password] = parseAuthHeader(req);
 
-    console.log('Username:' + username);
-    console.log('Password:' + password);
+    // Check if username & password was provided
+    if (!username || !password) {
+        return res.status(401).json({
+            status: 'fail',
+            message: 'Please provide username and password.'
+        });
+    }
 
-    // Check if database contains the submitted username
-    // if (username is used) {
-    //     return  res.status(200).json({
-    //         status: "fail",
-    //         message: "The username already exists. Try a different username"
-    //     });
-    // }
-    
-    try {
-        const salt = await bcrypt.genSalt(saltRounds);
-        const hash = await bcrypt.hash(password, salt);
-    } catch(err) {
-        console.log(err);
+    // Check if database already contains the submitted username
+    try { 
+        let userFound = await User.findOne({username: username});
+        if (userFound) {
+            return  res.status(401).json({
+                status: "fail",
+                message: "The username " + username + " already exists. Try a different username."
+            });
+        }
+    } catch (ex) {
+        console.log(ex);
     }
     
-    // store username and hashed password in db
+    // Hash the given password and store username & password in DB
+    try {
+        const salt = await bcrypt.genSalt(saltRounds);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        await User.create({
+            username: username,
+            password: hashedPassword
+        })
+    } catch(ex) {
+        console.log(err);
+    }
 
     return res.status(200).json({
         status: "success",
         message: "Account has been successfully created.",
         data: {
-            username: username,
-            password: hash
+            username: username        
         }
     });
 }
 
 
-// This helper function takes in request object as paramter and parses the auth-header 
+// This helper function takes in request object as parameter and parses the auth-header 
 // to obtain username & password. It returns the parsed username and password as an array.
 const parseAuthHeader = (req) => {
     const base64Credentials =  req.headers.authorization.split(' ')[1];
