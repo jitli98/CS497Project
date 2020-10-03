@@ -5,6 +5,7 @@ dotenv.config({path: './config.env'});
 
 
 const userRouter = require('./Router/userRouter');
+const authRouter = require('./Router/authRouter');
 // const authController = require('./Controllers/authController');
 
 
@@ -14,7 +15,7 @@ app.use(express.json()); // middleware (modifies incoming request data)
 
 /******** ROUTEHANDLERS ********/
 app.use('/user', userRouter);
-// app.use('/authorization', authController);
+app.use('/', authRouter);
 
 
 /********* SERVER *********/

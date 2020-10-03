@@ -1,6 +1,6 @@
 
 
-exports.getUserInfo = async (req, res, next) => {
+exports.getUserProfile = async (req, res, next) => {
     await console.log("Done");
     res.status(200).json({
         status: "success",
