@@ -1,3 +1,22 @@
+# To run Accounts Service
+1. Install npm packages
+```
+npm install
+```
+2. Create a config.env file in this directory with the follow configurations.
+```
+HOST=
+PORT=
+SALT_ROUND=
+DATABASE_URL=
+DATABASE_PASSWORD=
+```
+3. Start the server
+```
+npm start
+```
+
+
 # Accounts API Documentation
 The account API uses HTTP Request METHODS to communicate and HTTP [response codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) to indenticate status and errors. All responses come in standard JSON. All requests must include a `content-type` of `application/json` and the body must be valid JSON.
 
