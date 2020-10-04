@@ -23,7 +23,7 @@ The account API uses HTTP Request METHODS to communicate and HTTP [response code
 
 **Request:**
 ```json
-POST 127.0.0.1:6000/login
+GET 127.0.0.1:6000/login
 Accept: application/json
 Content-Type: application/json
 Authorization
@@ -120,7 +120,7 @@ Content-Type: application/json
 
 **Request:**
 ```json
-GET 127.0.0.1:6000/userProfile
+GET 127.0.0.1:6000/userprofile
 Accept: application/json
 Content-Type: application/json
 Body:

@@ -13,7 +13,7 @@ app.use(express.json()); // middleware (modifies incoming request data)
 
 
 /******** ROUTEHANDLERS ********/
-app.use('/userProfile', userRouter);
+app.use('/userprofile', userRouter);
 app.use('/', authRouter);
 
 
