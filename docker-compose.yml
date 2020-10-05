@@ -1,0 +1,11 @@
+version: "3.6"
+services:
+  submission-history:
+    build:
+      # Build the service from the Dockerfile in ./submission-history
+      context: ./submission-history
+    environment:
+      PORT: "5050"
+    ports:
+      # Expose internal port 5050 on external port 5050.
+      - 5050:5050
