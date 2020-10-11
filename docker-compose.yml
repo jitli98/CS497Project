@@ -1,0 +1,14 @@
+version: "3.6"
+services:
+  # Define a new service
+  exemplar:
+    build:
+      # Build the service from the Dockerfile in ./Exemplars
+      context: ./Exemplars
+    environment:
+      # Listen on 0.0.0.0 to accept connections from any host.
+      HOST: "0.0.0.0"
+      PORT: "3000"
+    ports:
+      # Expose internal port 3000 on external port 3000.
+      - 3000:3000
