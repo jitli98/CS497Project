@@ -10,7 +10,7 @@ I'm using standard HTTP_status_codes(https://en.wikipedia.org/wiki/List_of_HTTP_
 ```
 
 
-## Create Submission (From Matt's Service to My Service)
+## Create Submission (From Submission Testing service to Submission History Service)
 **Matt send:** challengeId, userId, username, programmingLanguage, executionTime, didAllTestsPass\
 **I return:** Status code 200 if OK or 404 if missing. 
 
@@ -34,7 +34,7 @@ res.status(404).json({
 ```
 
 
-## Submission for user (From Gerry's Service to My Service)
+## Submission for user (From Accounts service to Submission History Service)
 **Gerry send:** userId\
 **I return:** 10 most recent submissions for specified user, sorted by submission date (most recent first). Each submission includes challengeId, challengeName, dateSubmitted (Unix epoch seconds timestamp), didAllTestsPass. 
 
@@ -68,7 +68,7 @@ res.status(401).json({
 })
 ```
 
-## Highscore for challenge (From Austin's Service to My Service)
+## Highscore for challenge (From Challenges service to Submission History Service)
 **Austin send:** challengeId and programmingLanguage \
 **I return:** 10 fastest submissions for the specified challenge and programming language, sorted by execution time (fastest first). Each submission includes username, userId, dateSubmitted (Unix epoch seconds timestamp).
 
