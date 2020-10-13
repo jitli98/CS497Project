@@ -9,6 +9,8 @@ services:
       # Listen on 0.0.0.0 to accept connections from any host.
       HOST: "0.0.0.0"
       PORT: "3000"
+      DATABASE_URL: "mongodb://gerrygan98:<password>@0.0.0.0:27019/?retryWrites=true&w=majority"
+      DATABASE_PASSWORD: "password"
     ports:
       # Expose internal port 3000 on external port 3000.
       - 3000:3000
@@ -21,6 +23,28 @@ services:
       # Listen on 0.0.0.0 to accept connections from any host.
       HOST: "0.0.0.0"
       PORT: "3000"
+      SALT_ROUND: "12"
+      # Connecting string for accessing local mongoDB service(matches the credentials below)
+      DATABASE_URL: "mongodb://<username>:<password>@accounts_db:27017/?retryWrites=true&w=majority"
+      DATABASE_USERNAME: "gerrygan98"
+      DATABASE_PASSWORD: "password"
     ports:
-      # Expose internal port 3000 on external port 6000.
+      # Expose internal port 3000 on external port 4000.
       - 4000:3000
+  # Defines the mongoDB container for accounts service.
+  accounts_db:
+    image: "mongo"
+    container_name: "accountsMongoDBContainer"
+    environment:
+      # Initializes mongoDB with the following credentials
+      MONGO_INITDB_USERNAME: "gerrygan98"
+      MONGO_INITDB_PASSWORD: "password"
+    volumes:
+      # Shell script for initializing the database
+      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
+      - mongo_accounts_data:/data/db
+    ports:
+      # Expose internal port 27017 on external port 27019.
+      - 27019:27017
+volumes:
+  mongo_accounts_data:

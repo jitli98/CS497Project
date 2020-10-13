@@ -40,7 +40,23 @@ Prerequisites: [docker](https://docs.docker.com/engine/install/) and [docker-com
      http://0.0.0.0:8000/
     ```
 
+<hr>
 
-    
-
+### To perform a CLEAN restart of Docker Instances:
+1. Stop the container(s) using the following command:
+    ```
+    docker-compose down
+    ```
+2. Delete all containers using the following command:
+    ```
+    docker rm -f $(docker ps -a -q)
+    ``` 
+3. Delete all volumes using the following command(Only do this if you intend on removing persistent data stored in volumes):
+    ```
+    docker volume rm $(docker volume ls -q)
+    ``` 
+4. Restart the containers using:
+    ```
+    docker-compose up build
+    ```
 

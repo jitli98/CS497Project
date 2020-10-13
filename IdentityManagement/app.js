@@ -25,7 +25,8 @@ app.listen(port, hostname, () => {
 });
 
 /********* DATABASE *********/
-const DB = config.database.url.replace('<password>', config.database.password);
+const DB = config.database.url.replace('<password>', config.database.password)
+                              .replace('<username>', config.database.username);
 mongoose.connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
