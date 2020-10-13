@@ -57,6 +57,6 @@ Prerequisites: [docker](https://docs.docker.com/engine/install/) and [docker-com
     ``` 
 4. Restart the containers using:
     ```
-    docker-compose up build
+    docker-compose up --build
     ```
 
