@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 
 const config = require('./config/index.js');
 
-const userRouter = require('./router/userRouter.js');
-const authRouter = require('./router/authRouter.js');
+const userRouter = require('./Router/userRouter.js');
+const authRouter = require('./Router/authRouter.js');
 
 const app = express();
 
