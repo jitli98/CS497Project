@@ -1,5 +1,5 @@
 const express = require('express');
-const userController = require('../controllers/userController');
+const userController = require('../controllers/userController.js');
 
 const router = express.Router(); //creates a sub router for the different directories
 

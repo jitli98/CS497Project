@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const config = require('./config/');
+const config = require('./config/index.js');
 
-const userRouter = require('./router/userRouter');
-const authRouter = require('./router/authRouter');
+const userRouter = require('./router/userRouter.js');
+const authRouter = require('./router/authRouter.js');
 
 const app = express();
 
