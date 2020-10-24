@@ -6,7 +6,7 @@ COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
 
-# Compile Typescript.
+# Copy source code into docker container
 COPY / /
 
 # Declare that the service uses port 3000 internally.
