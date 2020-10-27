@@ -14,22 +14,22 @@ server.post("/submitSolution", async (req: express.Request, res: express.Respons
 	const code: string = req.body;
 
 	if (!code) {
-		res.status(400).send("Code must be specified in request body.");
+		res.status(400).json({message: "Code must be specified in request body."});
 		return;
 	}
 
 	if (typeof req.query.challengeId != "string") {
-		res.status(400).send("challengeId was not specified.");
+		res.status(400).json({message: "challengeId was not specified."});
 		return;
 	}
 
 	if (typeof req.query.userId != "string") {
-		res.status(400).send("userId was not specified.");
+		res.status(400).json({message: "userId was not specified."});
 		return;
 	}
 
 	if (typeof req.query.programmingLanguage != "string") {
-		res.status(400).send("language was not specified.");
+		res.status(400).json({message: "language was not specified."});
 		return;
 	}
 
@@ -38,17 +38,17 @@ server.post("/submitSolution", async (req: express.Request, res: express.Respons
 	const language = req.query.programmingLanguage;
 
 	if (!isSupportedProgrammingLanguage(language)) {
-		res.status(400).send("Illegal programming language specified");
+		res.status(400).json({message: "Illegal programming language specified"});
 		return;
 	}
 
 	if (!challengeId) {
-		res.status(400).send("Invalid challenge ID.");
+		res.status(400).json({message: "Invalid challenge ID."});
 		return;
 	}
 
 	if (!userId) {
-		res.status(400).send("Invalid user ID.");
+		res.status(400).json({message: "Invalid user ID."});
 		return;
 	}
 
@@ -60,7 +60,7 @@ server.post("/submitSolution", async (req: express.Request, res: express.Respons
 
 server.get("/getSubmissionStatus", async (req: express.Request, res: express.Response) => {
 	if (typeof req.query.submissionId != "string") {
-		res.status(400).send("submissionId was not specified.");
+		res.status(400).json({message: "submissionId was not specified."});
 		return;
 	}
 
