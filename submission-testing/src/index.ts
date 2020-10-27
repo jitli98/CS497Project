@@ -1,0 +1,80 @@
+import express from "express";
+import {
+	evaluateSubmission,
+	getSubmissionStatus,
+	isSupportedProgrammingLanguage
+} from "./submissionTester";
+import bodyParser from "body-parser";
+
+const server = express();
+
+server.use(bodyParser.text());
+
+server.post("/submitSolution", async (req: express.Request, res: express.Response) => {
+	const code: string = req.body;
+
+	if (!code) {
+		res.status(400).send("Code must be specified in request body.");
+		return;
+	}
+
+	if (typeof req.query.challengeId != "string") {
+		res.status(400).send("challengeId was not specified.");
+		return;
+	}
+
+	if (typeof req.query.userId != "string") {
+		res.status(400).send("userId was not specified.");
+		return;
+	}
+
+	if (typeof req.query.programmingLanguage != "string") {
+		res.status(400).send("language was not specified.");
+		return;
+	}
+
+	const challengeId = Number.parseInt(req.query.challengeId);
+	const userId = Number.parseInt(req.query.userId);
+	const language = req.query.programmingLanguage;
+
+	if (!isSupportedProgrammingLanguage(language)) {
+		res.status(400).send("Illegal programming language specified");
+		return;
+	}
+
+	if (!challengeId) {
+		res.status(400).send("Invalid challenge ID.");
+		return;
+	}
+
+	if (!userId) {
+		res.status(400).send("Invalid user ID.");
+		return;
+	}
+
+	const submissionId = await evaluateSubmission(code, language, challengeId, userId);
+	res.status(200).json({
+		submissionId: submissionId
+	});
+});
+
+server.get("/getSubmissionStatus", async (req: express.Request, res: express.Response) => {
+	if (typeof req.query.submissionId != "string") {
+		res.status(400).send("submissionId was not specified.");
+		return;
+	}
+
+	const status = await getSubmissionStatus(req.query.submissionId);
+
+	if (status) {
+		res.status(200).json({
+			status: status
+		});
+	} else {
+		res.status(404).json({
+			error: "Submission not found"
+		});
+	}
+});
+
+server.listen(8080)
