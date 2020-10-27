@@ -72,7 +72,7 @@ server.get("/getSubmissionStatus", async (req: express.Request, res: express.Res
 		});
 	} else {
 		res.status(404).json({
-			error: "Submission not found"
+			message: "Submission not found"
 		});
 	}
 });
