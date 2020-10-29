@@ -6,6 +6,34 @@ services:
       context: ./submission-history
     environment:
       PORT: "5050"
+      # TODO set this to something (but don't put it in a file commited to the public repo!)
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: submissionHistory
+      MYSQL_HOST: "submission-history-database"
     ports:
-      # Expose internal port 5050 on external port 5050.
-      - 5050:5050
+      # Expose internal port 5050 on external port 7000.
+      - 7000:5050
+    networks:
+      submissionHistory:
+  submission-history-database:
+    build:
+      context: "./submission-history-database/"
+      args:
+        # TODO set this to something (but don't put it in a file commited to the public repo!)
+        MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - "submissionHistoryData:/mysql_data"
+    environment:
+      # TODO set this to something (but don't put it in a file commited to the public repo!)
+        MYSQL_ROOT_PASSWORD: password
+    networks:
+      submissionHistory:
+      # https://stackoverflow.com/a/55706057
+    cap_add:
+      - SYS_NICE
+    ports:
+      - 3306:3306
+volumes:
+  submissionHistoryData:
+networks:
+  submissionHistory:
