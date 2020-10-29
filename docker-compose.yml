@@ -15,6 +15,8 @@ services:
       - 7000:5050
     networks:
       submissionHistory:
+    depends_on:
+      - submission-history-database
   submission-history-database:
     build:
       context: "./submission-history-database/"
@@ -33,20 +35,6 @@ services:
       - SYS_NICE
     ports:
       - 3306:3306
-  # Define a new service
-  exemplar:
-    build:
-      # Build the service from the Dockerfile in ./Exemplars
-      context: ./Exemplars
-    environment:
-      # Listen on 0.0.0.0 to accept connections from any host.
-      HOST: "0.0.0.0"
-      PORT: "3000"
-      DATABASE_URL: "mongodb://gerrygan98:<password>@0.0.0.0:27019/?retryWrites=true&w=majority"
-      DATABASE_PASSWORD: "password"
-    ports:
-      # Expose internal port 3000 on external port 3000.
-      - 3000:3000
   # Defines the account service
   accounts:
     build:
