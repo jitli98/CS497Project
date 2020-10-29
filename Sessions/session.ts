@@ -4,8 +4,7 @@ const port = 3000
 const axios = require('axios');
 const jwt = require("jsonwebtoken")
 const bodyParser = require('body-parser')
-const jwtKey = "my_secret_key"
-const jwtExpirySeconds = 300
+
 const jsonParser = bodyParser.json()
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
@@ -26,15 +25,15 @@ app.post('/token', urlencodedParser, async (req, res) => {
     // else{
 
 
-    const token = jwt.sign({ userId }, jwtKey, {
+    const token = jwt.sign({ userId }, process.env.JWT_KEY, {
         algorithm: "HS256",
-        expiresIn: jwtExpirySeconds,
+        expiresIn: process.env.JWT_KEY_EXPIRY,
       })
       console.log("token:", token)
     
       // set the cookie as the token string, with a similar max age as the token
       // here, the max age is in milliseconds, so we multiply by 1000
-      res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 })
+      res.cookie("token", token, { maxAge: parseInt(process.env.JWT_KEY_EXPIRY) * 1000 })
       res.end()
 
     // }
