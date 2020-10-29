@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const config = require('./config/');
+const config = require('./config/index.js');
 
-const userRouter = require('./router/userRouter');
-const authRouter = require('./router/authRouter');
+const userRouter = require('./Router/userRouter.js');
+const authRouter = require('./Router/authRouter.js');
 
 const app = express();
 
@@ -25,7 +25,8 @@ app.listen(port, hostname, () => {
 });
 
 /********* DATABASE *********/
-const DB = config.database.url.replace('<password>', config.database.password);
+const DB = config.database.url.replace('<password>', config.database.password)
+                              .replace('<username>', config.database.username);
 mongoose.connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,

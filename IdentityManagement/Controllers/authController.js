@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 
-const config = require('../config/');
-const User = require('../models/userModel');
+const config = require('../config/index.js');
+const User = require('../Models/userModel.js');
 
 const saltRounds = parseInt(config.salt_rounds);
 
