@@ -1,5 +1,38 @@
 version: "3.6"
 services:
+  submission-history:
+    build:
+      # Build the service from the Dockerfile in ./submission-history
+      context: ./submission-history
+    environment:
+      PORT: "5050"
+      # TODO set this to something (but don't put it in a file commited to the public repo!)
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: submissionHistory
+      MYSQL_HOST: "submission-history-database"
+    ports:
+      # Expose internal port 5050 on external port 7000.
+      - 7000:5050
+    networks:
+      submissionHistory:
+  submission-history-database:
+    build:
+      context: "./submission-history-database/"
+      args:
+        # TODO set this to something (but don't put it in a file commited to the public repo!)
+        MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - "submissionHistoryData:/mysql_data"
+    environment:
+      # TODO set this to something (but don't put it in a file commited to the public repo!)
+        MYSQL_ROOT_PASSWORD: password
+    networks:
+      submissionHistory:
+      # https://stackoverflow.com/a/55706057
+    cap_add:
+      - SYS_NICE
+    ports:
+      - 3306:3306
   # Define a new service
   exemplar:
     build:
@@ -46,5 +79,8 @@ services:
     ports:
       # Expose internal port 27017 on external port 27019.
       - 27019:27017
+networks:
+  submissionHistory:
 volumes:
   mongo_accounts_data:
+  submissionHistoryData:
