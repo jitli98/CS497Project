@@ -3,26 +3,27 @@ const app = express()
 const port = 3000
 const axios = require('axios');
 const jwt = require("jsonwebtoken")
-
+const bodyParser = require('body-parser')
 const jwtKey = "my_secret_key"
 const jwtExpirySeconds = 300
+const jsonParser = bodyParser.json()
+const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-
-app.get('/token', async (req, res) => {
+app.post('/token', urlencodedParser, async (req, res) => {
 
     const userId = req.body.userId
     const passId = req.body.passId
 
-    let response = await axios.post('/login', {
-        'userId': userId,
-        'passId': passId
-    })
+    // let response = await axios.post('/login', {
+    //     'userId': userId,
+    //     'passId': passId
+    // })
 
-    if(response.status != 200){
-      res.statusCode = response.status
-      res.send('Something has gone wrong!')
-    }
-    else{
+    // if(response.status != 200){
+      // res.statusCode = response.status
+      // res.send('Something has gone wrong!')
+    // }
+    // else{
 
 
     const token = jwt.sign({ userId }, jwtKey, {
@@ -36,7 +37,7 @@ app.get('/token', async (req, res) => {
       res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 })
       res.end()
 
-    }
+    // }
 })
 
 app.listen(port, () => {
