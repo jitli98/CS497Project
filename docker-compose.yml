@@ -14,9 +14,11 @@ services:
       # Expose internal port 5050 on external port 7000.
       - 7000:5050
     networks:
-      submissionHistory:
+      - submissionHistory
+      - microservice
     depends_on:
       - submission-history-database
+    restart: always      
   submission-history-database:
     build:
       context: "./submission-history-database/"
@@ -52,6 +54,9 @@ services:
     ports:
       # Expose internal port 3000 on external port 4000.
       - 4000:3000
+    networks:
+      - accountsNetwork
+      - microservice
   # Defines the mongoDB container for accounts service.
   accounts_db:
     image: "mongo"
@@ -66,9 +71,13 @@ services:
       - mongo_accounts_data:/data/db
     ports:
       # Expose internal port 27017 on external port 27019.
-      - 27019:27017
+      - 27019:2701
+    networks:
+      - accountsNetwork
 networks:
+  accountsNetwork:
   submissionHistory:
+  microservice:
 volumes:
   mongo_accounts_data:
   submissionHistoryData:
