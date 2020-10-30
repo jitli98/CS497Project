@@ -57,6 +57,7 @@ services:
     networks:
       - accountsNetwork
       - microservice
+    restart: always 
   # Defines the mongoDB container for accounts service.
   accounts_db:
     image: "mongo"
@@ -83,6 +84,9 @@ services:
     ports:
       # Uses external port 8080
       - "8080:8080"
+    networks:
+      - microservice
+    restart: always
 networks:
   accountsNetwork:
   submissionHistory:
