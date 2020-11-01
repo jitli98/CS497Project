@@ -18,7 +18,7 @@ services:
       - microservice
     depends_on:
       - submission-history-database
-    restart: always      
+    restart: always
   submission-history-database:
     build:
       context: "./submission-history-database/"
@@ -74,6 +74,16 @@ services:
       - 27019:2701
     networks:
       - accountsNetwork
+  submission-testing:
+    build:
+      context: ./submission-testing
+    ports:
+      - 8000:8080
+    volumes:
+      # Expose the host docker socket to the container so it can create new containers.
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      microservice:
 networks:
   accountsNetwork:
   submissionHistory:
