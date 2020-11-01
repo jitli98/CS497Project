@@ -14,7 +14,11 @@ services:
       # Expose internal port 5050 on external port 7000.
       - 7000:5050
     networks:
-      submissionHistory:
+      - submissionHistory
+      - microservice
+    depends_on:
+      - submission-history-database
+    restart: always
   submission-history-database:
     build:
       context: "./submission-history-database/"
@@ -33,20 +37,6 @@ services:
       - SYS_NICE
     ports:
       - 3306:3306
-  # Define a new service
-  exemplar:
-    build:
-      # Build the service from the Dockerfile in ./Exemplars
-      context: ./Exemplars
-    environment:
-      # Listen on 0.0.0.0 to accept connections from any host.
-      HOST: "0.0.0.0"
-      PORT: "3000"
-      DATABASE_URL: "mongodb://gerrygan98:<password>@0.0.0.0:27019/?retryWrites=true&w=majority"
-      DATABASE_PASSWORD: "password"
-    ports:
-      # Expose internal port 3000 on external port 3000.
-      - 3000:3000
   # Defines the account service
   accounts:
     build:
@@ -64,6 +54,9 @@ services:
     ports:
       # Expose internal port 3000 on external port 4000.
       - 4000:3000
+    networks:
+      - accountsNetwork
+      - microservice
   # Defines the mongoDB container for accounts service.
   accounts_db:
     image: "mongo"
@@ -78,7 +71,9 @@ services:
       - mongo_accounts_data:/data/db
     ports:
       # Expose internal port 27017 on external port 27019.
-      - 27019:27017
+      - 27019:2701
+    networks:
+      - accountsNetwork
   submission-testing:
     build:
       context: ./submission-testing
@@ -88,9 +83,11 @@ services:
       # Expose the host docker socket to the container so it can create new containers.
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      submissionHistory:
+      microservice:
 networks:
+  accountsNetwork:
   submissionHistory:
+  microservice:
 volumes:
   mongo_accounts_data:
   submissionHistoryData:
