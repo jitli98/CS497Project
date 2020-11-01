@@ -87,6 +87,8 @@ services:
     volumes:
       # Expose the host docker socket to the container so it can create new containers.
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      submissionHistory:
 networks:
   submissionHistory:
 volumes:

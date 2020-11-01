@@ -4,6 +4,7 @@ import {v4 as randomUuid} from "uuid";
 import deepEquals from "deep-equal";
 import fs from "fs";
 import streams from "memory-streams";
+import request from "request-promise";
 
 const runnerImageContexts = new Map<string, string>();
 runnerImageContexts.set("python3", "/runners/python3/");
@@ -31,7 +32,7 @@ runnerImageContexts.forEach(async (context: string, language: string) => {
 /**
  * Begins submission evaluation and returns the ID of the submission.
  */
-export async function evaluateSubmission(code: string, language: string, challengeId: number, userId: number): Promise<string> {
+export async function evaluateSubmission(code: string, language: string, challengeId: number, challengeName: string, userId: number, userName: string): Promise<string> {
 	// FIXME get the testcases from the challenges service.
 	const testCases: TestCase[] = [
 		// Input arrays are nested because it includes all parameters passed to the function (the first and only of which is the array to be sorted).
@@ -43,12 +44,29 @@ export async function evaluateSubmission(code: string, language: string, challen
 	const submissionId = randomUuid();
 	setSubmissionStatus(submissionId, "QUEUED");
 
-	runTests(code, language, testCases, submissionId).then((testResults) => {
+	runTests(code, language, testCases, submissionId).then(async (testResults) => {
 		const allTestsPassed = testResults.reduce((allPassed, result) => result.outcome === "PASSED" && allPassed, true);
 		setSubmissionStatus(submissionId, allTestsPassed ? "PASSED" : "FAILED");
-		// FIXME publish test results to submission history.
+
+		await request("http://submission-history:5050/createSubmission", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded"
+			},
+			form: {
+				userID: userId,
+				userName: userName,
+				challengeId: challengeId,
+				challengeName: challengeName,
+				programmingLanguage: language,
+				// TODO specify execution time.
+				executionTime: 0,
+				didAllTestsPass: allTestsPassed ? 1 : 0
+			}
+		});
 	}).catch((err) => {
 		setSubmissionStatus(submissionId, "ERRORED");
+		console.error(err);
 	});
 
 	return submissionId;
