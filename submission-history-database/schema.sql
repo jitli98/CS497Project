@@ -8,7 +8,7 @@ userID INT(255),
 userName VARCHAR(255), 
 challengeId INT(255), 
 challengeName VARCHAR(255), 
-programmingLanguage CHAR(255), 
+programmingLanguage VARCHAR(255), 
 dateSubmitted DATETIME ,
 executionTime INT, 
 didAllTestsPass BOOL
