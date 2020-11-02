@@ -71,7 +71,7 @@ services:
       - mongo_accounts_data:/data/db
     ports:
       # Expose internal port 27017 on external port 27019.
-      - 27019:2701
+      - 27019:27017
     networks:
       - accountsNetwork
   submission-testing:
@@ -93,7 +93,8 @@ services:
       JWT_KEY: "my_secret_key"
       JWT_KEY_EXPIRY : "7d"
     ports:
-      - 5000:5000
+      # Expose internal port 5000 on external port 6000.
+      - 6000:5000
     networks:
       microservice:
  
