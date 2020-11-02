@@ -21,7 +21,7 @@ services:
     restart: always
   submission-history-database:
     build:
-      context: "./submission-history-database/"
+      context: "./submission-history/submission-history-database/"
       args:
         # TODO set this to something (but don't put it in a file commited to the public repo!)
         MYSQL_ROOT_PASSWORD: password
