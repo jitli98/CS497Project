@@ -6,6 +6,13 @@ COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
 
+COPY ./views ./
+COPY ./routes ./
+COPY ./models ./
+COPY ./*.js ./
+COPY ./controllers ./
+COPY ./public ./
+
 # Declare that the service uses port 3000 internally.
 EXPOSE 3000
 # Define the command that starts the service.
