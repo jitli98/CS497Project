@@ -44,8 +44,8 @@ export async function evaluateSubmission(code: string, language: string, challen
 	const submissionId = randomUuid();
 	setSubmissionStatus(submissionId, "QUEUED");
 
-	runTests(code, language, testCases, submissionId).then(async (testResults) => {
-		const allTestsPassed = testResults.reduce((allPassed, result) => result.outcome === "PASSED" && allPassed, true);
+	runTests(code, language, testCases, submissionId).then(async (executionResults) => {
+		const allTestsPassed = executionResults.tests.reduce((allPassed, result) => result.outcome === "PASSED" && allPassed, true);
 		setSubmissionStatus(submissionId, allTestsPassed ? "PASSED" : "FAILED");
 
 		await request("http://submission-history:5050/createSubmission", {
@@ -59,8 +59,7 @@ export async function evaluateSubmission(code: string, language: string, challen
 				challengeId: challengeId,
 				challengeName: challengeName,
 				programmingLanguage: language,
-				// TODO specify execution time.
-				executionTime: 0,
+				executionTime: executionResults.executionTime,
 				didAllTestsPass: allTestsPassed ? 1 : 0
 			}
 		});
@@ -76,13 +75,14 @@ export async function evaluateSubmission(code: string, language: string, challen
  * Runs the specified tests and returns the results. This function will update the submission status to "RUNNING" once
  * the container has started.
  */
-export async function runTests(code: string, language: string, testCases: TestCase[], submissionId: string): Promise<TestResult[]> {
-	const testResults: TestResult[] = [];
+export async function runTests(code: string, language: string, testCases: TestCase[], submissionId: string): Promise<ExecutionResults> {
+	const testResults: TestCaseResult[] = [];
 
 	let container: Container | null = null;
 	const containerStream = new streams.WritableStream();
 
 	try {
+		const startTime = Date.now();
 		container = await docker.run(
 			`runner-${language}`,
 			[code, JSON.stringify(testCases)],
@@ -97,6 +97,7 @@ export async function runTests(code: string, language: string, testCases: TestCa
 				}
 			}
 		);
+		const executionTime = Date.now() - startTime;
 		setSubmissionStatus(submissionId, "RUNNING");
 
 		const output = JSON.parse(containerStream.toString());
@@ -121,7 +122,10 @@ export async function runTests(code: string, language: string, testCases: TestCa
 			});
 		}
 
-		return testResults;
+		return {
+			tests: testResults,
+			executionTime: executionTime
+		};
 	} catch (err) {
 		console.error("Output from errored execution was: ", containerStream.toString());
 		throw new Error(`An error occurred while running the tests for submission '${submissionId}'`);
@@ -151,7 +155,12 @@ interface TestCase {
 	expectedOutput: any;
 }
 
-interface TestResult extends TestCase {
+interface TestCaseResult extends TestCase {
 	output: any;
 	outcome: TestOutcome;
+}
+
+interface ExecutionResults {
+	tests: TestCaseResult[];
+	executionTime: number;
 }
