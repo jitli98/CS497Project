@@ -45,14 +45,35 @@ app.post('/token', urlencodedParser, async (req: any, res: any, next: any) => {
 
       console.log("token:", token)
     
-      // set the cookie as the token string, with a similar max age as the token
-      const key: any = process.env.JWT_KEY_EXPIRY
-      // here, the max age is in milliseconds, so we multiply by 1000
-      res.cookie("token", token, { maxAge: key * 1000 })
       return res.send(token)
 
     }
 )
+
+app.post('/verify', urlencodedParser, async (req: any, res: any, next: any) => {
+
+  let token :string
+
+    try{
+      token = req.body.token
+    }
+    catch{
+      return res.statusCode(400).send("Bad request: token malformated")
+    }
+
+
+  jwt.verify(token, process.env.JWT_KEY, function(err: any, decoded: any) {
+
+    if(err){
+      console.log(err)
+      res.status(401).send("Invalid token")
+    }
+    else
+      res.send()
+  })
+
+})
+
 
 app.listen(port, () => {
   console.log(`Sessions listening at http://0.0.0.0:${port}`)
