@@ -12,6 +12,6 @@ COPY / /
 RUN npm run tsc
 
 # Declare that the service uses port 3000 internally.
-EXPOSE 3000
+EXPOSE 8000
 # Define the command that starts the service.
-ENTRYPOINT ["node", "./app.js"]
+ENTRYPOINT ["node", "./session.js"]

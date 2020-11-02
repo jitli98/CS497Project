@@ -79,18 +79,18 @@ services:
     ports:
       # Expose internal port 27017 on external port 27019.
       - 27019:27017
-    sessions:
-        build:
-          context: ./sessions
-        environment: 
-          HOST: "0.0.0.0"
-          PORT: "3000"
-        ports:
-          - 5000:3000
-        environment:
-            # Initializes mongoDB with the following credentials
-            JWT_KEY: "my_secret_key"
-            JWT_KEY_EXPIRY : 300
+  sessions:
+      build:
+        context: ./sessions
+      environment: 
+        HOST: "0.0.0.0"
+        PORT: "8000"
+      ports:
+        - 8000:8000
+      environment:
+          # Initializes mongoDB with the following credentials
+          JWT_KEY: "my_secret_key"
+          JWT_KEY_EXPIRY : 300
 networks:
   submissionHistory:
 volumes:
