@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 8000
+const port = 5000
 const axios = require('axios');
 const jwt = require("jsonwebtoken")
 const bodyParser = require('body-parser')
