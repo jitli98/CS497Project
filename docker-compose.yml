@@ -81,7 +81,7 @@ services:
       - 27019:27017
   sessions:
       build:
-        context: ./sessions
+        context: ./Sessions
       environment: 
         HOST: "0.0.0.0"
         PORT: "8000"
