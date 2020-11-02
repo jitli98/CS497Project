@@ -14,6 +14,6 @@ COPY ./controllers ./controllers
 COPY ./public ./public
 
 # Declare that the service uses port 3000 internally.
-EXPOSE 3000D
+EXPOSE 3000
 # Define the command that starts the service.
 ENTRYPOINT ["node", "server.js"]

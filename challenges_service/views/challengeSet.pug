@@ -35,6 +35,7 @@ body
         if result
             table#challengeTable
                 tr
+                    th Id
                     th Title
                     th Description
                     th Difficulty
@@ -44,13 +45,13 @@ body
             
                     each chal in result
                         tr
+                        th #{chal.id}
                         th #{chal.name}
                         th #{chal.description}
                         th #{chal.difficulty}
                         th Incomplete
                         th #{chal.date}
                         th 
-                            a(href='/test') View
-                            //- a(href = `/highscores?challengeId=${chal.challengeId}&programmingLanguage=${chal.programmingLanguage}`) View
+                            a(href = `/highscores?challengeId=${chal.challengeId}&programmingLanguage=${chal.programmingLanguage}`) View
         if newChallenge
             p Challenge Created Successfully: #{newChallenge}

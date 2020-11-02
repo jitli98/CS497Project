@@ -8,12 +8,16 @@ const createChallengeController = require(`../controllers/createChallengeControl
 router.post('/createChallenge', createChallengeController.challengeCreatePost);
 
 /// GET SPECIFIED CHALLENGE'S TESTS & OTHER PARAMETERS ///
-// Example: /getChallengeParameters?challengeId=challengeName ==> returns array of test objects for challengeName
+// Example: /getChallengeParameters?challengeId=1234 ==> returns array of test objects for challenge with specified id
 router.get('/getChallengeParameters', createChallengeController.challengeParametersGet);
 
 /// GET SPECIFIED NUMBER OF CHALLENGES ///
 // Example: /getChallengeSet?num=20 ==> retuns 20 challenges (default of 10)
 router.get("/getChallengeSet", createChallengeController.getChallengeSet);
+
+// GET SPECIFIED CHALLENGES HIGHSCORES ///
+/// Example /getHighscores?challengeId=212&programmingLanguage=java
+router.get("/getHighscores", createChallengeController.getHighscores);
 
 /// DELETE ALL DOCUMENTS FROM DB ///
 router.get("/delete", createChallengeController.deleteAllDocuments);
@@ -27,7 +31,7 @@ router.get("/delete", createChallengeController.deleteAllDocuments);
 router.get('/challengeSet', createChallengeController.challengeSetPageGet);
 
 /// GET CHALLENGE HIGHSCORES PAGE ///
-/// /highscores?challengeId = CHALENGE NAME
+/// /highscores?challengeId=212&programmingLanguage=java
 router.get("/highscores", createChallengeController.highscoresPageGet);
 
 ///=========================================================================///

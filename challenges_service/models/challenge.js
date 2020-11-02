@@ -1,7 +1,8 @@
 // models/challenge.js
 const db = require("../db");
+const AutoIncrement = require('mongoose-sequence')(db);
 
-const Challenge = new db.model("Challenge", {
+const challengeSchema = new db.Schema({
     name: {
         type: String, 
         required: [true, 'Challenge name is required'],
@@ -33,6 +34,9 @@ const Challenge = new db.model("Challenge", {
         default: Date.now 
     }
 });
+
+challengeSchema.plugin(AutoIncrement, {inc_field: 'id'});
+const Challenge = new db.model("Challenge", challengeSchema);
 
 module.exports = Challenge;
 

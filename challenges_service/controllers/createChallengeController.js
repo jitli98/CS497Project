@@ -11,13 +11,53 @@ const maxChallengesPerPage = 20;
 /// RETURN TEST CASES FOR SPECIFIED CHALLENGE ///
 exports.challengeParametersGet = async function(req, res, next) { 
     var challengeId = req.query.challengeId; 
-    await Challenge.find({"name": challengeId}, 'testCases', function(err, result){
+    await Challenge.find({"id": challengeId}, 'testCases', function(err, result){
         if(err){
             res.send(err);
         } else {         
             res.json(result)
         } 
     });
+}
+
+/// RETURNS SPECIFIED NUMBER OF CHALLENGE OBJECTS ///
+exports.getChallengeSet = async function(req, res, next){
+    var numChallenges = req.query.numChallenges;
+
+    // Default number of challenges to return if num challenges is not specified
+    if(numChallenges == null){
+        numChallenges=10;
+    }
+
+    // Fetch challenges from data base
+    await Challenge.find({}, function(err, result) {
+        if(err){
+            res.send(err);
+        } else {            
+            res.json(result);
+        }
+    }) 
+    .limit(maxChallengesPerPage);
+}
+
+// RETURNS HIGHSCORE OBJECTS FOR SPECIFIED CHALLENGE ///
+exports.getHighscores = async function(req, res, next){
+    var challengeId = req.query.challengeId;
+    var programmingLanguage = req.query.programmingLanguage;
+
+    if(challengeId == null || programmingLanguage == null){
+       res.send(500, { error: "Unable to get highscores because no challengeId or programming language was provided." });
+    }
+
+    // Get Highscores from Submission History Service
+    var url = `${hostname}${submissionPort}/getChallengeHighscores?challengeId=${challengeId}&programmingLanguage=${programmingLanguage}`;
+    fetch(url)                          // Send request
+    .then(response => response.json())  // Parse response
+    .then(data => {                     // Data contains the text/body of response
+        console.log("Recieved highscores from submissions service" + data);
+        res.status(200).json(data);
+    })                            
+    .catch(err => res.send(err));       // maybe change this to res.send(500, {error: err})); ? 
 }
 
 /// SAVE A NEW CHALLENGE TO DB ///
@@ -45,15 +85,15 @@ exports.challengeCreatePost = async function(req, res, next){
     if ( req.body.testInput instanceof Array ) {
         for(var i in req.body.testInput){
             var testCase = {};
-            testCase.input = JSON.parse(req.body.testInput[i]);
-            testCase.expectedOutput = JSON.parse(req.body.testExpected[i]);
+            testCase.input = JSON.parse(JSON.stringify(req.body.testInput[i]));
+            testCase.expectedOutput = JSON.parse(JSON.stringify(req.body.testExpected[i]));
             testCaseSet.push(testCase);
         }   
     // Case 2: Only 1 test case
     } else {
         var testCase = {};
-        testCase.input = [JSON.parse(req.body.testInput)];
-        testCase.expectedOutput = JSON.parse(req.body.testExpected);
+        testCase.input = JSON.parse(JSON.stringify(req.body.testInput));
+        testCase.expectedOutput = JSON.parse(JSON.stringify(req.body.testExpected));
         testCaseSet.push(testCase);
     }
     newChallenge.testCases = testCaseSet;
@@ -68,69 +108,6 @@ exports.challengeCreatePost = async function(req, res, next){
         }
     }); 
 }
-
-/// RETURNS SPECIFIED NUMBER OF CHALLENGES ///
-exports.getChallengeSet = async function(req, res, next){
-    var numChallenges = req.query.num;
-
-    // Default number of challenges to return if num challenges is not specified
-    if(numChallenges == null){
-        numChallenges=10;
-    }
-
-    // Fetch challenges from data base
-    await Challenge.find({}, function(err, result) {
-        if(err){
-            res.send(err);
-        } else {            
-            res.json(result);
-        }
-    }) 
-    .limit(maxChallengesPerPage);
-}
-
-
-/// RETURNS AN HTML PAGE CONTAINING CHALLENGE SET  ///
-exports.challengeSetPageGet = async function(req, res){
-    // Fetch challenges from data base
-    await Challenge.find({}, function(err, result) {
-        if(err){
-            res.send(err);
-        } else {            
-            console.log(result);
-            res.render("challengeSet", {"result":result});
-        }
-    }) 
-    .limit(maxChallengesPerPage);
-}
-
-
-// RETURNS HTML PAGE CONTAINING HIGHSCORES FOR SPECIFIED CHALLENGE ///
-exports.highscoresPageGet = async function(req, res, next){
-    var challengeId = req.query.challengeId;
-    var programmingLanguage = req.query.programmingLanguage;
-
-    if(challengeId == null || programmingLanguage == null){
-       res.send(500, { error: "Unable to get highscores because no challengeId or programming language was provided." });
-    }
-
-    // Get Highscores from Submission History Service
-    var url = `${hostname}${submissionPort}/getChallengeHighscores?challengeId=${challengeId}&programmingLanguage=${programmingLanguage}`;
-    fetch(url)                          // Send request
-    .then(response => response.json())  // Parse response
-    .then(data => {                     // Data contains the text/body of response
-        console.log(data)
-        res.render("highscores", {"data":data});  
-    })                            
-    .catch(err => res.send(err));       // maybe change this to res.send(500, {error: err})); ? 
-}
-
-
-
-
-
-
-
 
 /// DELETE ALL DOCUMENTS IN DB ///
 exports.deleteAllDocuments = async function(req,res){
@@ -168,18 +145,49 @@ exports.test = function(req, res, next){
 
 
 
+///=========================RENDER HTML=======================================///
+
+// RETURNS HTML PAGE CONTAINING HIGHSCORES FOR SPECIFIED CHALLENGE ///
+exports.highscoresPageGet = async function(req, res, next){
+    var challengeId = req.query.challengeId;
+    var programmingLanguage = req.query.programmingLanguage;
+
+    if(challengeId == null || programmingLanguage == null){
+       res.send(500, { error: "Unable to get highscores because no challengeId or programming language was provided." });
+    }
+
+    // Get Highscores from Submission History Service
+    var url = `${hostname}${submissionPort}/getChallengeHighscores?challengeId=${challengeId}&programmingLanguage=${programmingLanguage}`;
+    fetch(url)                          // Send request
+    .then(response => response.json())  // Parse response
+    .then(data => {                     // Data contains the text/body of response
+        console.log(data)
+        res.render("highscores", {"data":data});  
+    })                            
+    .catch(err => res.send(err));       // maybe change this to res.send(500, {error: err})); ? 
+}
+
+/// RETURNS AN HTML PAGE CONTAINING CHALLENGE SET  ///
+exports.challengeSetPageGet = async function(req, res){
+    // Fetch challenges from data base
+    await Challenge.find({}, function(err, result) {
+        if(err){
+            res.send(err);
+        } else {            
+            console.log(result);
+            res.render("challengeSet", {"result":result});
+        }
+    }) 
+    .limit(maxChallengesPerPage);
+}
+///==============================================================================///
+
+
+
+
 //GET /getUserSubmissions?userId=12345
 // get user submissions --> challenges will link to some other table of all people who have completed challenge
 // user submissions will have some metrics stored with it, such as run time, memory usage, test cases past
-
-
-
-
-
-
-
-
-
 
 
 // May need this later for error checking form data and updating html
