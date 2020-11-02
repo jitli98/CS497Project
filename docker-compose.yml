@@ -1,5 +1,14 @@
 version: "3.6"
 services:
+  challenges:
+    build:
+      context: ./challenges_service
+    ports:
+      - 5000:3000
+    environment:
+      DATABASE_URL="mongodb+srv://ampinto:n6u7V5wxoPmr6piX@cluster0.l4vjr.mongodb.net/challenges?retryWrites=true&w=majority;"
+    networks:
+      microservice:
   submission-history:
     build:
       # Build the service from the Dockerfile in ./submission-history
