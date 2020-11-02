@@ -104,7 +104,7 @@ async function start() {
     // Austin's request 
     // fastest first
     server.get('/getChallengeHighscores', (req, res) => {
-        if (typeof req.query.challengeId != "string" || typeof req.query.programmingLanguagereq != "string" || req.query.challengeId == "" || req.query.programmingLanguagereq == "") {
+        if (typeof req.query.challengeId != "string" || typeof req.query.programmingLanguage != "string" || req.query.challengeId == "" || req.query.programmingLanguage == "") {
             res.status(404).json({
                 status: "failed",
                 message: "ID or language is missing"
