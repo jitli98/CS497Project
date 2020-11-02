@@ -18,8 +18,8 @@ Sessions returns the error responses of Accounts if that's the place where the e
 
 ```
 200: Success
-401: Unauthorized
 400: Bad request
+401: Unauthorized
 404: Cannot be found
 ```
 
