@@ -23,8 +23,8 @@ const challengeSchema = new db.Schema({
     },
     testCases: [
         {
-            input:[{}], 
-            expectedOutput:[{}],
+            input:{}, 
+            expectedOutput:{},
             _id: false,
             id: false,
         }
@@ -32,7 +32,8 @@ const challengeSchema = new db.Schema({
     date:{ 
         type: Date, 
         default: Date.now 
-    }
+    },
+
 });
 
 challengeSchema.plugin(AutoIncrement, {inc_field: 'id'});

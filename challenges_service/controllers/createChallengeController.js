@@ -2,8 +2,9 @@
 const Challenge = require('../models/challenge');
 const fetch = require('node-fetch');
 
-const hostname = 'http://localhost:';
-const submissionPort = '7000';
+const hostname = 'http://submission-history:';
+const submissionPort = '5050';
+const submissionHostname = 'http://submission-history:';
 const testingPort = '8000';
 
 const maxChallengesPerPage = 20;
@@ -11,14 +12,16 @@ const maxChallengesPerPage = 20;
 /// RETURN TEST CASES FOR SPECIFIED CHALLENGE ///
 exports.challengeParametersGet = async function(req, res, next) { 
     var challengeId = req.query.challengeId; 
-    await Challenge.find({"id": challengeId}, 'testCases', function(err, result){
+    console.log("got a request for test cases");
+    await Challenge.find({"id": challengeId}, 'testCases id', function(err, result){
         if(err){
             res.send(err);
         } else {         
-            res.json(result)
+            res.json(result[0]);
         } 
     });
 }
+
 
 /// RETURNS SPECIFIED NUMBER OF CHALLENGE OBJECTS ///
 exports.getChallengeSet = async function(req, res, next){
@@ -44,13 +47,14 @@ exports.getChallengeSet = async function(req, res, next){
 exports.getHighscores = async function(req, res, next){
     var challengeId = req.query.challengeId;
     var programmingLanguage = req.query.programmingLanguage;
+    console.log(req);
 
     if(challengeId == null || programmingLanguage == null){
        res.send(500, { error: "Unable to get highscores because no challengeId or programming language was provided." });
     }
 
     // Get Highscores from Submission History Service
-    var url = `${hostname}${submissionPort}/getChallengeHighscores?challengeId=${challengeId}&programmingLanguage=${programmingLanguage}`;
+    var url = `${submissionHostname}${submissionPort}/getChallengeHighscores?challengeId=${challengeId}&programmingLanguage=${programmingLanguage}`;
     fetch(url)                          // Send request
     .then(response => response.json())  // Parse response
     .then(data => {                     // Data contains the text/body of response
@@ -62,6 +66,7 @@ exports.getHighscores = async function(req, res, next){
 
 /// SAVE A NEW CHALLENGE TO DB ///
 exports.challengeCreatePost = async function(req, res, next){
+    console.log(req.body);
     // Check if a challenge with the same name already exists
     await Challenge.exists({'name': req.body.name}, function(err, result){
         if(err){
@@ -85,20 +90,20 @@ exports.challengeCreatePost = async function(req, res, next){
     if ( req.body.testInput instanceof Array ) {
         for(var i in req.body.testInput){
             var testCase = {};
-            testCase.input = JSON.parse(JSON.stringify(req.body.testInput[i]));
-            testCase.expectedOutput = JSON.parse(JSON.stringify(req.body.testExpected[i]));
+            testCase.input = JSON.parse(req.body.testInput[i]);
+            testCase.expectedOutput = JSON.parse(req.body.testExpected[i]);
             testCaseSet.push(testCase);
         }   
     // Case 2: Only 1 test case
     } else {
+        console.log(req.body.testInput);
         var testCase = {};
-        testCase.input = JSON.parse(JSON.stringify(req.body.testInput));
-        testCase.expectedOutput = JSON.parse(JSON.stringify(req.body.testExpected));
+        testCase.input = JSON.parse(req.body.testInput);
+        testCase.expectedOutput = JSON.parse(req.body.testExpected);
         testCaseSet.push(testCase);
     }
     newChallenge.testCases = testCaseSet;
-    console.log(newChallenge.testCases);
-
+    
     // save the new challenge in our data base
     await newChallenge.save(function(err, result){
         if(err){
@@ -145,6 +150,8 @@ exports.test = function(req, res, next){
 
 
 
+
+
 ///=========================RENDER HTML=======================================///
 
 // RETURNS HTML PAGE CONTAINING HIGHSCORES FOR SPECIFIED CHALLENGE ///
@@ -157,12 +164,12 @@ exports.highscoresPageGet = async function(req, res, next){
     }
 
     // Get Highscores from Submission History Service
-    var url = `${hostname}${submissionPort}/getChallengeHighscores?challengeId=${challengeId}&programmingLanguage=${programmingLanguage}`;
+    var url = `${submissionHostname}${submissionPort}/getChallengeHighscores?challengeId=${challengeId}&programmingLanguage=${programmingLanguage}`;
     fetch(url)                          // Send request
     .then(response => response.json())  // Parse response
     .then(data => {                     // Data contains the text/body of response
-        console.log(data)
-        res.render("highscores", {"data":data});  
+        var submissions = makeSubmissionObjects(data);
+        res.render("highscores", {"data":submissions});  
     })                            
     .catch(err => res.send(err));       // maybe change this to res.send(500, {error: err})); ? 
 }
@@ -174,15 +181,32 @@ exports.challengeSetPageGet = async function(req, res){
         if(err){
             res.send(err);
         } else {            
-            console.log(result);
             res.render("challengeSet", {"result":result});
         }
     }) 
     .limit(maxChallengesPerPage);
 }
+
+function makeSubmissionObjects(data){
+    var submissions = [];
+    for(var i in data.body.userName){
+        var submission = {};
+        submission.userID = data.body.userID[i];
+        submission.userName = data.body.userName[i];
+        submission.challengeId = data.body.challengeId[i];
+        submission.challengeName = data.body.challengeName[i];
+        submission.programmingLanguage = data.body.programmingLanguage[i];
+        submission.dateSubmitted = data.body.dateSubmitted[i];
+        submission.executionTime = data.body.executionTime[i];
+        submission.didAllTestsPass = data.body.didAllTestsPass[i];
+        submissions.push(submission);
+    }
+    return submissions;
+}
+
+
+
 ///==============================================================================///
-
-
 
 
 //GET /getUserSubmissions?userId=12345

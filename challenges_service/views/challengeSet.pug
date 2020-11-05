@@ -52,6 +52,6 @@ body
                         th Incomplete
                         th #{chal.date}
                         th 
-                            a(href = `/highscores?challengeId=${chal.challengeId}&programmingLanguage=${chal.programmingLanguage}`) View
+                            a(href =`/highscores?challengeId=${chal.id}&programmingLanguage=python3`) View
         if newChallenge
             p Challenge Created Successfully: #{newChallenge}
