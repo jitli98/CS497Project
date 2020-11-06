@@ -1,5 +1,25 @@
 version: "3.6"
 services:
+  front-end:
+    build:
+      context: ./Front-End
+    ports:
+      - 80:8000
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8000"
+    networks:
+      microservice:
+  gateway:
+    build:
+      context: ./Gateway
+    ports:
+      - 9000:9000
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "9000"
+    networks:
+      microservice:
   challenges:
     build:
       context: ./challenges_service
