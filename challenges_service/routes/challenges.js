@@ -23,7 +23,6 @@ router.get("/getHighscores", createChallengeController.getHighscores);
 router.get("/delete", createChallengeController.deleteAllDocuments);
 
 
-
 ///========================== WILL MOVE TO GATEWAY ==========================///
 
 /// GET CHALLENGE SET PAGE ///

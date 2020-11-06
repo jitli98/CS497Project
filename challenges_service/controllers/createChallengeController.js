@@ -25,6 +25,7 @@ exports.challengeParametersGet = async function(req, res, next) {
 
 /// RETURNS SPECIFIED NUMBER OF CHALLENGE OBJECTS ///
 exports.getChallengeSet = async function(req, res, next){
+    console.log("Challenge Service got a request for challenge");
     var numChallenges = req.query.numChallenges;
 
     // Default number of challenges to return if num challenges is not specified
@@ -36,7 +37,8 @@ exports.getChallengeSet = async function(req, res, next){
     await Challenge.find({}, function(err, result) {
         if(err){
             res.send(err);
-        } else {            
+        } else {   
+            console.log(result);         
             res.json(result);
         }
     }) 
