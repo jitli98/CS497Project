@@ -35,10 +35,6 @@ Prerequisites: [docker](https://docs.docker.com/engine/install/) and [docker-com
 2. Build and run all services with `docker-compose up --build`
 
 3. The host name and ports of each service are as follows: \
-    Exemplar:
-    ```
-     http://0.0.0.0:3000/
-    ```
     Accounts:
     ```
      http://0.0.0.0:4000/
