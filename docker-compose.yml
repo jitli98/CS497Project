@@ -10,16 +10,7 @@ services:
       PORT: "8000"
     networks:
       microservice:
-  gateway:
-    build:
-      context: ./Gateway
-    ports:
-      - 9000:9000
-    environment:
-      HOST: "0.0.0.0"
-      PORT: "9000"
-    networks:
-      microservice:
+  # Defines the Challenges microservice
   challenges:
     build:
       context: ./challenges_service
@@ -29,6 +20,7 @@ services:
       DATABASE_URL: "mongodb+srv://ampinto:n6u7V5wxoPmr6piX@cluster0.l4vjr.mongodb.net/challenges?retryWrites=true&w=majority"
     networks:
       microservice:
+  # Defines the Submission History microservice
   submission-history:
     build:
       # Build the service from the Dockerfile in ./submission-history
