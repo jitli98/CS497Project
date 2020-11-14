@@ -22,7 +22,7 @@ function delay(ms) {
 
 // Constructor
 async function start() {
-    await delay(30000);
+    await delay(5000);
     // Create connection
     const db = await mysql.createConnection({
         host: process.env.MYSQL_HOST,
