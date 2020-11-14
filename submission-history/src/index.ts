@@ -14,23 +14,15 @@ server.use(express.urlencoded({ extended: true }));
 server.use(bodyParser.text()); // for req.body
 server.use(bodyParser.urlencoded({ extended: true })); // for req.body
 // Using EJS as view engine
-server.set('view engine', 'ejs');
+// server.set('view engine', 'ejs');
 
-// Needed Variables
-// Gerry
-let challengeID = [];
-let challengeName = [];
-let dateSubmittedG = [];
-let didAllTestsPass = [];
-
-// Austin
-let userName = [];
-let userId = [];
-let dateSubmittedA = [];
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 // Constructor
 async function start() {
-
+    await delay(30000);
     // Create connection
     const db = await mysql.createConnection({
         host: process.env.MYSQL_HOST,
@@ -38,6 +30,8 @@ async function start() {
         password: process.env.MYSQL_ROOT_PASSWORD,
         database: process.env.MYSQL_DATABASE
     });
+    // To see if it is true
+    console.log("DB connection is successful!");
 
     // Create submission
     server.post('/createSubmission', async (req, res) => {
@@ -71,34 +65,29 @@ async function start() {
     // Gerry's request
     // most recent first
     server.get('/getUserSubmissions', (req, res) => {
-        let sql = SqlString.format('SELECT * FROM submissionTable WHERE userId = ? ORDER BY dateSubmitted DESC', [req.query.userId]);
+        if (typeof req.query.userId != "string" || req.query.userId == "") {
+            res.status(404).json({
+                status: "failed",
+                message: "ID is missing"
+            });
+            return;
+        }
+        let sql = SqlString.format('SELECT * FROM submissionTable WHERE userId = ? ORDER BY dateSubmitted DESC LIMIT 10', [req.query.userId]);
+        
         let query = db.query(sql, (error, results) => {
             if (error) {
                 console.log("Select " + error);
-                if (req.query.userId == '') {
-                    res.status(404).json({
-                        status: "failed",
-                        message: "ID is missing"
-                    });
-                }
-                else {
-                    res.status(401).json({
-                    status: "failed",
-                        message: "ID is mismatch"
-                    });
-                }
             }
             else {
                 res.status(200).json({
                     status: "success",
                     message: "Post fetched...",
                     data: {
-                        "challengeId": challengeID = results.slice(-10).map(item => item.challengeId),
-                        "challengeName": challengeName = results.slice(-10).map(item => item.challengeName),
-                        "dateSubmitted": dateSubmittedG = results.slice(-10).map(item => item.dateSubmitted.toISOString().slice(0, 19).replace('T', ' ')),
-                        "didAllTestsPass": didAllTestsPass = results.slice(-10).map(item => item.didAllTestsPass)
+                        "challengeId": results.map(item => item.challengeId),
+                        "challengeName": results.map(item => item.challengeName),
+                        "dateSubmitted": results.map(item => item.dateSubmitted.toISOString().slice(0, 19).replace('T', ' ')),
+                        "didAllTestsPass": results.map(item => item.didAllTestsPass)
                     }
-                    
                 });
                 /**
                 res.render('submissions', {
@@ -115,31 +104,31 @@ async function start() {
     // Austin's request 
     // fastest first
     server.get('/getChallengeHighscores', (req, res) => {
-        let sql = SqlString.format('SELECT * FROM submissionTable WHERE challengeId = ? AND programmingLanguage = ? ORDER BY executionTime', [req.query.challengeId, req.query.programmingLanguage]);
+        if (typeof req.query.challengeId != "string" || typeof req.query.programmingLanguage != "string" || req.query.challengeId == "" || req.query.programmingLanguage == "") {
+            res.status(404).json({
+                status: "failed",
+                message: "ID or language is missing"
+            });
+            return;
+        }
+        let sql = SqlString.format('SELECT * FROM submissionTable WHERE challengeId = ? AND programmingLanguage = ? ORDER BY executionTime LIMIT 10', [req.query.challengeId, req.query.programmingLanguage]);
         let query = db.query(sql, (error, results) => {
             if (error) {
                 console.log("Select " + error);
-                if (req.query.userId == '' || req.query.programmingLanguage == '') {
-                    res.status(404).json({
-                        status: "failed",
-                        message: "ID or language is missing"
-                    });
-                }
-                else {
-                    res.status(401).json({
-                        status: "failed",
-                        message: "ID or language is mismatch"
-                    });
-                }
             }
             else {
                 res.status(200).json({
                     status: "success",
                     message: "Post fetched...",
                     data: {
-                        "userName": userName = results.slice(-10).map(item => item.userName),
-                        "userId": userId = results.slice(-10).map(item => item.userID),
-                        "dateSubmitted": dateSubmittedA = results.slice(-10).map(item => item.dateSubmitted.toISOString().slice(0, 19).replace('T', ' '))
+                        "userID": results.map(item => item.userID),
+                        "userName": results.map(item => item.userName),
+                        "challengeId": results.map(item => item.challengeId),
+                        "challengeName": results.map(item => item.challengeName),
+                        "programmingLanguage": results.map(item => item.programmingLanguage),
+                        "dateSubmitted": results.map(item => item.dateSubmitted.toISOString().slice(0, 19).replace('T', ' ')),
+                        "executionTime": results.map(item => item.executionTime),
+                        "didAllTestsPass": results.map(item => item.didAllTestsPass)
                     }
                     
                 });

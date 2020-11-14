@@ -1,5 +1,34 @@
 version: "3.6"
 services:
+  front-end:
+    build:
+      context: ./Front-End
+    ports:
+      - 80:8000
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8000"
+    networks:
+      microservice:
+  gateway:
+    build:
+      context: ./Gateway
+    ports:
+      - 9000:9000
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "9000"
+    networks:
+      microservice:
+  challenges:
+    build:
+      context: ./challenges_service
+    ports:
+      - 5000:3000
+    environment:
+      DATABASE_URL: "mongodb+srv://ampinto:n6u7V5wxoPmr6piX@cluster0.l4vjr.mongodb.net/challenges?retryWrites=true&w=majority"
+    networks:
+      microservice:
   submission-history:
     build:
       # Build the service from the Dockerfile in ./submission-history
@@ -18,10 +47,10 @@ services:
       - microservice
     depends_on:
       - submission-history-database
-    restart: always      
+    restart: always
   submission-history-database:
     build:
-      context: "./submission-history-database/"
+      context: "./submission-history/submission-history-database/"
       args:
         # TODO set this to something (but don't put it in a file commited to the public repo!)
         MYSQL_ROOT_PASSWORD: password
@@ -75,7 +104,32 @@ services:
       - 27019:27017
     networks:
       - accountsNetwork
-  # Defines the Nginx API gateway
+  # Defines the Submission Testing microservice
+  submission-testing:
+    build:
+      context: ./submission-testing
+    ports:
+      - 8000:8080
+    volumes:
+      # Expose the host docker socket to the container so it can create new containers.
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      microservice:
+  # Defines the Sessions microservice
+  sessions:
+    build:
+      context: ./Sessions
+    environment: 
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_KEY: "my_secret_key"
+      JWT_KEY_EXPIRY : 300
+    ports:
+      # Expose internal port 5000 on external port 6000.
+      - 6000:5000
+    networks:
+      microservice:
+  # Defines the API Gateway
   api_gateway:
     image: nginx:alpine
     container_name: "apiGatewayContainer" 
@@ -85,8 +139,9 @@ services:
       # Uses external port 8080
       - "8080:8080"
     networks:
-      - microservice
+      microservice:
     restart: always
+ 
 networks:
   accountsNetwork:
   submissionHistory:
