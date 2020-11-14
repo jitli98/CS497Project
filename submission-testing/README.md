@@ -14,13 +14,13 @@ All responses come in standard JSON.
 ```
 
 ## Submit Solution
-**You send:** the challenge ID, user ID, and programming language (in the query parameters), and the solution code (in the body).
+**You send:** the challenge ID, challenge name, user ID, user name, and programming language (in the query parameters), and the solution code (in the body).
 
 **You get:** A submission ID for querying the status of the tests.
 
 ### Request
 ```
-POST 127.0.0.1:8000/submitSolution?challengeId=123&programmingLanguage=python3&userId=123
+POST 127.0.0.1:8000/submitSolution?challengeId=123&programmingLanguage=python3&userId=123&challengeName=test%20challenge&userName=matt
 Accept: application/json
 Content-Type: text/plain
 

@@ -24,13 +24,26 @@ app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
 
+
 /********* DATABASE *********/
-const DB = config.database.url.replace('<password>', config.database.password)
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const connectDatabase = async () => {
+    await delay(1000);
+    const DB = config.database.url.replace('<password>', config.database.password)
                               .replace('<username>', config.database.username);
-mongoose.connect(DB, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('DB connection is successful!');
-});
+    try {
+        await mongoose.connect(DB, {
+            useNewUrlParser: true,
+            useCreateIndex: true,
+            useUnifiedTopology: true
+        });
+        console.log('DB connection is successful!');
+    } catch (err) {
+        console.log("Db connection failed");
+        throw err;
+    }
+};
+connectDatabase();
