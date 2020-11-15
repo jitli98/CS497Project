@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 5000
+const port = process.env.PORT;
 const axios = require('axios');
 const jwt = require("jsonwebtoken")
 const bodyParser = require('body-parser')
@@ -50,30 +50,47 @@ app.post('/token', urlencodedParser, async (req: any, res: any, next: any) => {
     }
 )
 
-app.post('/verify', urlencodedParser, async (req: any, res: any, next: any) => {
+app.get('/verify', urlencodedParser, async (req: any, res: any, next: any) => {
+  
+  console.log(req.headers);
 
   let token :string
-
-    try{
-      token = req.body.token
+  try{
+    token = extractTokenFromHeader(req);
+    if (!token) {
+      console.log("Invalid token");
+      return res.status(401).send("Invalid token");
     }
-    catch{
-      return res.statusCode(400).send("Bad request: token malformated")
-    }
-
+  }
+  catch{
+    return res.statusCode(400).send("Bad request: token malformated")
+  }
 
   jwt.verify(token, process.env.JWT_KEY, function(err: any, decoded: any) {
-
     if(err){
       console.log(err)
-      res.status(401).send("Invalid token")
+      return res.status(401).send("Invalid token");
     }
-    else
-      res.send()
-  })
+  });
 
+  const decodedToken = jwt.decode(token);
+  if (!decodedToken.userId) {
+    console.log("Invalid token");
+    return res.status(401).send("Invalid token");
+  }
+  const decodedUserId = decodedToken.userId;
+
+  res.setHeader("X-Username", decodedUserId);
+  return res.status(200).send();
 })
 
+function extractTokenFromHeader (req: any) {
+  if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+      return req.headers.authorization.split(' ')[1];
+  } else {
+    return null;
+  }
+}
 
 app.listen(port, () => {
   console.log(`Sessions listening at http://0.0.0.0:${port}`)

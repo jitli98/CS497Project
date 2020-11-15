@@ -34,30 +34,22 @@ Prerequisites: [docker](https://docs.docker.com/engine/install/) and [docker-com
 
 2. Build and run all services with `docker-compose up --build`
 
-3. The host name and ports of each service are as follows: \
-    Exemplar:
-    ```
-     http://0.0.0.0:3000/
-    ```
+3. The URLs of services exposed to the client: \
     Accounts:
     ```
-     http://0.0.0.0:4000/
+     http://localhost:8080/account/
     ```
     Challenges:
     ```
-     http://0.0.0.0:5000/
+     http://localhost:8080/challenges/
     ```
     Sessions:
     ```
-     http://0.0.0.0:6000/
-    ```
-    Submission History:
-    ```
-     http://0.0.0.0:7000/
+     http://localhost:8080/sessions/
     ```
     Submission Testing:
     ```
-     http://0.0.0.0:8000/
+     http://localhost:8080/submission-testing/
     ```
 
 <hr>

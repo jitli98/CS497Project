@@ -2,7 +2,7 @@ const axios = require('axios');
 const submissionHistoryServiceURL = "http://submission-history:5050/";
 
 exports.getUserProfile = async (req, res, next) => {
-    const username = req.body.username;
+    const username = req.headers.username;
 
     const userSubmissionHisUrl = submissionHistoryServiceURL + "getUserSubmissions?userId=" + req.body.username;    
 
