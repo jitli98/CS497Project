@@ -14,15 +14,16 @@ All responses come in standard JSON.
 ```
 
 ## Submit Solution
-**You send:** the challenge ID, challenge name, user ID, user name, and programming language (in the query parameters), and the solution code (in the body).
+**You send:** the challenge ID, challenge name, user name, and programming language (in the query parameters), and the solution code (in the body).
 
 **You get:** A submission ID for querying the status of the tests.
 
 ### Request
 ```
-POST 127.0.0.1:8000/submitSolution?challengeId=123&programmingLanguage=python3&userId=123&challengeName=test%20challenge&userName=matt
+POST 127.0.0.1:8000/submitSolution?challengeId=123&programmingLanguage=python3&challengeName=test%20challenge&userName=matt
 Accept: application/json
 Content-Type: text/plain
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
 
 def submission(array):
     array.sort()
@@ -67,6 +68,7 @@ Content-Type: application/json
 GET 127.0.0.1:8000/getSubmissionStatus?submissionId=346d7a92-116b-4318-8ecd-02eb886a39cc
 Accept: application/json
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
 ```
 ### Successful Response
 ```
