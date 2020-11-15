@@ -50,30 +50,36 @@ app.post('/token', urlencodedParser, async (req: any, res: any, next: any) => {
     }
 )
 
-app.post('/verify', urlencodedParser, async (req: any, res: any, next: any) => {
+app.get('/verify', urlencodedParser, async (req: any, res: any, next: any) => {
+  console.log("VERIFYING");
 
   let token :string
+  try{
+    token = extractTokenFromHeader(req);
+  }
+  catch{
+    return res.statusCode(400).send("Bad request: token malformated")
+  }
 
-    try{
-      token = req.body.token
-    }
-    catch{
-      return res.statusCode(400).send("Bad request: token malformated")
-    }
-
-
-  jwt.verify(token, process.env.JWT_KEY, function(err: any, decoded: any) {
-
+  jwt.verify(token, process.env.JWT_KEY, function(err: any, decoded: any) {3
     if(err){
       console.log(err)
       res.status(401).send("Invalid token")
     }
-    else
-      res.send()
-  })
+  });
 
+  const decodedUserId = jwt.decode(token).userId;
+
+  res.setHeader("user-id", decodedUserId);
+  res.status(200).send();
 })
 
+function extractTokenFromHeader (req: any) {
+  if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+      return req.headers.authorization.split(' ')[1];
+  }
+  return null;
+}
 
 app.listen(port, () => {
   console.log(`Sessions listening at http://0.0.0.0:${port}`)

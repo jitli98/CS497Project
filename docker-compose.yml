@@ -113,12 +113,12 @@ services:
       context: ./Sessions
     environment: 
       HOST: "0.0.0.0"
-      PORT: "5000"
+      PORT: "3500"
       JWT_KEY: "my_secret_key"
       JWT_KEY_EXPIRY : "7d"
     ports:
       # Expose internal port 5000 on external port 6000.
-      - 6000:5000
+      - 6000:3500
     networks:
       microservice:
   # Defines the API Gateway
@@ -133,6 +133,12 @@ services:
     networks:
       microservice:
     restart: always
+    depends_on:
+      - accounts
+      - submission-history
+      - submission-testing
+      - challenges
+      - sessions
  
 networks:
   accountsNetwork:
