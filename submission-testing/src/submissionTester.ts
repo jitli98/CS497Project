@@ -32,7 +32,7 @@ runnerImageContexts.forEach(async (context: string, language: string) => {
 /**
  * Begins submission evaluation and returns the ID of the submission.
  */
-export async function evaluateSubmission(code: string, language: string, challengeId: number, challengeName: string, userId: number, userName: string): Promise<string> {
+export async function evaluateSubmission(code: string, language: string, challengeId: number, challengeName: string, userId: string, userName: string): Promise<string> {
 	// FIXME get the testcases from the challenges service.
 	const testCases: TestCase[] = [
 		// Input arrays are nested because it includes all parameters passed to the function (the first and only of which is the array to be sorted).

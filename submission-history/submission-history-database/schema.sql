@@ -4,7 +4,7 @@ USE submissionHistory;
 CREATE TABLE submissionTable(
 
 submission int PRIMARY KEY AUTO_INCREMENT, 
-userID INT(255), 
+userID VARCHAR(255), 
 userName VARCHAR(255), 
 challengeId INT(255), 
 challengeName VARCHAR(255), 
