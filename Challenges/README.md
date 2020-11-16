@@ -270,13 +270,14 @@ Content-Type: application/json
 **You send:** A challenge name, description, diffictulty('Easy', 'Medium', or 'Hard'), and as many test cases as desired. Test cases have two parts: testInput and testExpected, both of these should be input as arrays containing the expected inputs/outputs.
 
 If you would like to include more than one test case simply continue putting additional testInput and testExpected fields in the POST body, for example, to include two or more test cases you would do:
-
+```
 testInput: [1,2,3]
 textExpted:[3,2,1]
 testInput: [5,4,3]
 textExpted:[3,4,5]
 testInput...
 testExpected...
+```
 
 **You get:** Confirmation that the challenge has been created successfully.
 
