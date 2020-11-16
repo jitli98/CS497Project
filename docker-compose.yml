@@ -22,7 +22,7 @@ services:
       microservice:
   challenges:
     build:
-      context: ./challenges_service
+      context: ./Challenges
     ports:
       - 5000:3000
     environment:
