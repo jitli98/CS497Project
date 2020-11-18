@@ -12,7 +12,7 @@ server.use(bodyParser.text());
 
 server.post("/submitSolution", async (req: express.Request, res: express.Response) => {
 	const code: string = req.body;
-	const requiredParameters = ["challengeId", "challengeName", "userId", "userName", "programmingLanguage"];
+	const requiredParameters = ["challengeId", "challengeName", "programmingLanguage"];
 	for (const param of requiredParameters) {
 		if (typeof req.query[param] != "string") {
 			res.status(400).json({message: `Query parameter '${param}' was not specified.`});
@@ -25,10 +25,12 @@ server.post("/submitSolution", async (req: express.Request, res: express.Respons
 		return;
 	}
 
+	const token_username = req.headers.username;
+
 	const challengeId = Number.parseInt(req.query.challengeId as string);
 	const challengeName = req.query.challengeName as string;
-	const userId = Number.parseInt(req.query.userId as string);
-	const userName = req.query.userName as string;
+	const userId = token_username as string;
+	const userName = token_username as string;
 	const language = req.query.programmingLanguage as string;
 
 	if (!isSupportedProgrammingLanguage(language)) {

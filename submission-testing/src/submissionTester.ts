@@ -32,7 +32,7 @@ runnerImageContexts.forEach(async (context: string, language: string) => {
 /**
  * Begins submission evaluation and returns the ID of the submission.
  */
-export async function evaluateSubmission(code: string, language: string, challengeId: number, challengeName: string, userId: number, userName: string): Promise<string> {
+export async function evaluateSubmission(code: string, language: string, challengeId: number, challengeName: string, userId: string, userName: string): Promise<string> {
 	const parameters: any = JSON.parse(await request("http://challenges:3000/getChallengeParameters", {
 		method: "GET",
 		qs: {
@@ -40,6 +40,7 @@ export async function evaluateSubmission(code: string, language: string, challen
 		}
 	}));
 	const testCases: TestCase[] = parameters.testCases;
+	console.log(testCases);
 
 	const submissionId = randomUuid();
 	setSubmissionStatus(submissionId, "QUEUED");
