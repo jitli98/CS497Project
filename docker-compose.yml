@@ -13,7 +13,7 @@ services:
   # Defines the Challenges microservice
   challenges:
     build:
-      context: ./challenges_service
+      context: ./Challenges
     image: ${DOCKER_REGISTRY}/challenges
     ports:
       - 5000:3000
@@ -140,7 +140,7 @@ services:
     build:
       context: ./Sessions
     image: ${DOCKER_REGISTRY}/sessions
-    environment: 
+    environment:
       HOST: "0.0.0.0"
       PORT: "5000"
       JWT_KEY: "my_secret_key"
