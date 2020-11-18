@@ -33,13 +33,14 @@ runnerImageContexts.forEach(async (context: string, language: string) => {
  * Begins submission evaluation and returns the ID of the submission.
  */
 export async function evaluateSubmission(code: string, language: string, challengeId: number, challengeName: string, userId: string, userName: string): Promise<string> {
-	// FIXME get the testcases from the challenges service.
-	const testCases: TestCase[] = [
-		// Input arrays are nested because it includes all parameters passed to the function (the first and only of which is the array to be sorted).
-		{"input": [[3, 6, 1]], "expectedOutput": [1, 3, 6]},
-		{"input": [[7, 5]], "expectedOutput": [5, 7]},
-		{"input": [[10, 20, 30]], "expectedOutput": [10, 20, 30]}
-	];
+	const parameters: any = JSON.parse(await request("http://challenges:3000/getChallengeParameters", {
+		method: "GET",
+		qs: {
+			challengeId: challengeId
+		}
+	}));
+	const testCases: TestCase[] = parameters.testCases;
+	console.log(testCases);
 
 	const submissionId = randomUuid();
 	setSubmissionStatus(submissionId, "QUEUED");
