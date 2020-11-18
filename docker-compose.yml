@@ -14,7 +14,7 @@ services:
   challenges:
     build:
       context: ./Challenges
-    image: ${DOCKER_REGISTRY}/challenges
+    image: ${DOCKER_REGISTRY:-localhost}/challenges
     ports:
       - 5000:3000
     environment:
@@ -30,7 +30,7 @@ services:
     build:
       # Build the service from the Dockerfile in ./submission-history
       context: ./submission-history
-    image: ${DOCKER_REGISTRY}/submission-history
+    image: ${DOCKER_REGISTRY:-localhost}/submission-history
     environment:
       PORT: "5050"
       # TODO set this to something (but don't put it in a file commited to the public repo!)
@@ -56,7 +56,7 @@ services:
       args:
         # TODO set this to something (but don't put it in a file commited to the public repo!)
         MYSQL_ROOT_PASSWORD: password
-    image: ${DOCKER_REGISTRY}/submission-history-database
+    image: ${DOCKER_REGISTRY:-localhost}/submission-history-database
     volumes:
       - "submissionHistoryData:/mysql_data"
     environment:
@@ -78,7 +78,7 @@ services:
     build:
       # Build the account service from the Dockerfile in ./IdentityManagement
       context: ./IdentityManagement
-    image: ${DOCKER_REGISTRY}/accounts
+    image: ${DOCKER_REGISTRY:-localhost}/accounts
     environment:
       # Listen on 0.0.0.0 to accept connections from any host.
       HOST: "0.0.0.0"
@@ -123,7 +123,7 @@ services:
   submission-testing:
     build:
       context: ./submission-testing
-    image: ${DOCKER_REGISTRY}/submission-testing
+    image: ${DOCKER_REGISTRY:-localhost}/submission-testing
     ports:
       - 8000:8080
     volumes:
@@ -139,7 +139,7 @@ services:
   sessions:
     build:
       context: ./Sessions
-    image: ${DOCKER_REGISTRY}/sessions
+    image: ${DOCKER_REGISTRY:-localhost}/sessions
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
@@ -158,7 +158,7 @@ services:
   api_gateway:
     build:
       context: ./Gateway
-    image:  ${DOCKER_REGISTRY}/api_gateway
+    image:  ${DOCKER_REGISTRY:-localhost}/api_gateway
     ports:
       # Uses external port 8080
       - "8080:8080"
