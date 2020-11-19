@@ -101,14 +101,14 @@ services:
         condition: on-failure
   # Defines the mongoDB container for accounts service.
   accounts_db:
-    image: "mongo"
+    build:
+      context: "./init-mongo"
+    image: "${DOCKER_REGISTRY:-localhost}/init-mongo"
     environment:
       # Initializes mongoDB with the following credentials
       MONGO_INITDB_USERNAME: "gerrygan98"
       MONGO_INITDB_PASSWORD: "password"
     volumes:
-      # Shell script for initializing the database
-      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
       - mongo_accounts_data:/data/db
     ports:
       # Expose internal port 27017 on external port 27019.
