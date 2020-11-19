@@ -47,7 +47,7 @@ services:
       - submission-history-database
     restart: always
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: on-failure
   submission-history-database:
