@@ -26,7 +26,7 @@ We are also currently in the process of learning a container orchestration techn
 * [Gerry Gan](https://youtu.be/Sl-UmJx18_U)
 * [Veronica Gusev]()
 * [Thinh Pham]()
-* [Matthew Oslan]()
+* [Matthew Oslan](https://www.youtube.com/watch?v=sr_culZ4z-g)
 * [Austin Pinto]()
 
 
