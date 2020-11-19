@@ -147,7 +147,7 @@ services:
       JWT_KEY_EXPIRY : "7d"
     ports:
       # Expose internal port 5000 on external port 6000.
-      - 6000:5000
+      - 6001:5000
     networks:
       microservice:
     deploy:
