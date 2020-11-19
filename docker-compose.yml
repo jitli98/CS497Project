@@ -10,13 +10,21 @@ services:
   #     PORT: "8000"
   #   networks:
   #     microservice:
-  # Defines the Challenges microservice
+  # Defines redis container used by Challenges
+  challenges-redis:
+    image: redis
+    expose:
+      - 6379
+    networks:
+      microservice:
+    # Defines the Challenges microservice
   challenges:
     build:
       context: ./Challenges
     ports:
       - 5000:3000
     environment:
+      REDIS_URL: "redis://challenges-redis"
       DATABASE_URL: "mongodb+srv://ampinto:n6u7V5wxoPmr6piX@cluster0.l4vjr.mongodb.net/challenges?retryWrites=true&w=majority"
     networks:
       microservice:
