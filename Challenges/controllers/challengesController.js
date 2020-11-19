@@ -52,7 +52,7 @@ exports.getChallengeSet = async function(req, res, next){
             return;
         }
     }) 
-    .limit(maxChallengesPerPage);
+    .limit(numChallenges);
 }
 
 // RETURNS HIGHSCORE OBJECTS FOR SPECIFIED CHALLENGE ///
@@ -85,7 +85,9 @@ exports.getHighscores = async function(req, res, next){
             res.status(500).json({ message: "Challenges service was unable to retrieve highscores"});
             return;
         }
-        var submissions = makeSubmissionObjects(data);  // Convert thinhs response to objects
+        console.log(data);
+        var submissions = makeSubmissionObjects(data.data);  // Convert thinhs response to objects
+        console.log(submissions);
         if(submissions.length == 0){
             res.status(404).json({ message: "The challengeId or programmingLanguage does not exist"});     
             return;
@@ -157,7 +159,10 @@ exports.challengeCreatePost = async function(req, res, next){
                     res.status(500).json({ message: "Challenges service encounted an error while saving challenge to database"});  
                     return;
                 } else { 
-                    res.status(201).json({ message: `Challenge created successfully!`});
+                    res.status(201).json({ 
+                        message: `Challenge created successfully! Challenge Id: ${newChallenge.id}`,
+                        challengeId: newChallenge.id
+                    });
                     return;
                 }
             }); 
@@ -228,16 +233,15 @@ exports.challengeSetPageGet = async function(req, res){
 
 function makeSubmissionObjects(data){
     var submissions = [];
-    for(var i in data.body.userName){
+    for(var i in data.userName){
         var submission = {};
-        submission.userID = data.body.userID[i];
-        submission.userName = data.body.userName[i];
-        submission.id = data.body.challengeId[i];
-        submission.challengeName = data.body.challengeName[i];
-        submission.programmingLanguage = data.body.programmingLanguage[i];
-        submission.dateSubmitted = data.body.dateSubmitted[i];
-        submission.executionTime = data.body.executionTime[i];
-        submission.didAllTestsPass = data.body.didAllTestsPass[i];
+        submission.userName = data.userName[i];
+        submission.id = data.challengeId[i];
+        submission.challengeName = data.challengeName[i];
+        submission.programmingLanguage = data.programmingLanguage[i];
+        submission.dateSubmitted = data.dateSubmitted[i];
+        submission.executionTime = data.executionTime[i];
+        submission.didAllTestsPass = data.didAllTestsPass[i];
         submissions.push(submission);
     }
     return submissions;
