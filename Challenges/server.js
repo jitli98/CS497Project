@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require('path');
 const formData = require('express-form-data');
+const redisServer = require('./redis-server/server');
 
 const port = 3000;
 const app = express();
@@ -27,4 +28,6 @@ app.set('view engine', 'pug');
 
 // Start the server
 app.listen(port,function() {console.log("server.js: Challenges server listening on port: " + port);});
+
+module.exports = redisServer;
 
