@@ -5,7 +5,7 @@
 * Gerry Gan - [Accounts](https://github.com/jitli98/CS497Project/tree/master/IdentityManagement), [Gateway](https://github.com/jitli98/CS497Project/tree/master/Gateway)
 * Austin Pinto - [Challenges](https://github.com/jitli98/CS497Project/tree/master/challenges)
 * Thinh Pham - [Submission History](https://github.com/jitli98/CS497Project/tree/master/submission-history)
-* Veronica Gusev - [Sessions](https://github.com/jitli98/CS497Project/tree/master/sessions)
+* Veronica Gusev - [Sessions](https://drive.google.com/file/d/14XDyBNaW8aOgbKbd101OIi2GLnU5xRRl/view?usp=sharing)
 
 
 ## System design
