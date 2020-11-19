@@ -48,7 +48,11 @@ server.post("/submitSolution", async (req: express.Request, res: express.Respons
 	}
 
 	const submissionResult = await evaluateSubmission(code, language, challengeId, challengeName, userId, userName);
-	res.status(200).json(submissionResult);
+	if (submissionResult.status === "ERRORED") {
+		res.status(500).json(submissionResult);
+	} else {
+		res.status(200).json(submissionResult);
+	}
 });
 
 server.listen(8080)
