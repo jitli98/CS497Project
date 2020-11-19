@@ -132,7 +132,7 @@ services:
     networks:
       microservice:
     deploy:
-      replicas: 1
+      replicas: 5
       restart_policy:
         condition: on-failure
   # Defines the Sessions microservice

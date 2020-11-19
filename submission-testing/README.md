@@ -16,7 +16,7 @@ All responses come in standard JSON.
 ## Submit Solution
 **You send:** the challenge ID, challenge name, user name, and programming language (in the query parameters), and the solution code (in the body).
 
-**You get:** A submission ID for querying the status of the tests.
+**You get:** A submission ID and result of the tests.
 
 ### Request
 ```
@@ -35,9 +35,11 @@ def submission(array):
 Content-Type: application/json
 
 {
-    "submissionId": "346d7a92-116b-4318-8ecd-02eb886a39cc"
+    "submissionId": "346d7a92-116b-4318-8ecd-02eb886a39cc",
+    "status": "PASSED"
 }
 ```
+`status` will be one of `"PASSED"`, `"FAILED"`, or `"ERRORED"`.  
 ### Failed Responses
 #### Missing submission code 
 ```
@@ -55,40 +57,6 @@ Content-Type: application/json
 
 {
     "message": "<parameter> was not specified."
-}
-```
-
-## Get Submission Status
-**You send:** A submission ID.
-
-**You get:** The status of the tests for the specified submission. 
-
-### Request
-```
-GET 127.0.0.1:8000/getSubmissionStatus?submissionId=346d7a92-116b-4318-8ecd-02eb886a39cc
-Accept: application/json
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
-```
-### Successful Response
-```
-200 OK
-Content-Type: application/json
-
-{
-    "status": "RUNNING"
-}
-```
-`status` will be one of `"QUEUED"`,`"RUNNING"`, `"PASSED"`, `"FAILED"`, or `"ERRORED"`.  
-
-### Failed Responses
-#### Invalid submission ID 
-```
-404 Not Found
-Content-Type: application/json
-
-{
-    "message": "Submission not found"
 }
 ```
 

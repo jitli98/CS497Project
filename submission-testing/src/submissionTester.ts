@@ -32,7 +32,7 @@ runnerImageContexts.forEach(async (context: string, language: string) => {
 /**
  * Begins submission evaluation and returns the ID of the submission.
  */
-export async function evaluateSubmission(code: string, language: string, challengeId: number, challengeName: string, userId: string, userName: string): Promise<string> {
+export async function evaluateSubmission(code: string, language: string, challengeId: number, challengeName: string, userId: string, userName: string): Promise<SubmissionResult> {
 	const parameters: any = JSON.parse(await request("http://challenges:3000/getChallengeParameters", {
 		method: "GET",
 		qs: {
@@ -43,11 +43,12 @@ export async function evaluateSubmission(code: string, language: string, challen
 	console.log(testCases);
 
 	const submissionId = randomUuid();
-	setSubmissionStatus(submissionId, "QUEUED");
+	let submissionStatus: TestOutcome;
 
-	runTests(code, language, testCases, submissionId).then(async (executionResults) => {
+	try {
+		const executionResults: ExecutionResults = await runTests(code, language, testCases, submissionId);
 		const allTestsPassed = executionResults.tests.reduce((allPassed, result) => result.outcome === "PASSED" && allPassed, true);
-		setSubmissionStatus(submissionId, allTestsPassed ? "PASSED" : "FAILED");
+		submissionStatus = allTestsPassed ? "PASSED" : "FAILED";
 
 		await request("http://submission-history:5050/createSubmission", {
 			method: "POST",
@@ -64,12 +65,15 @@ export async function evaluateSubmission(code: string, language: string, challen
 				didAllTestsPass: allTestsPassed ? 1 : 0
 			}
 		});
-	}).catch((err) => {
-		setSubmissionStatus(submissionId, "ERRORED");
+	} catch (err) {
+		submissionStatus = "ERRORED";
 		console.error(err);
-	});
+	}
 
-	return submissionId;
+	return {
+		id: submissionId,
+		status: submissionStatus
+	}
 }
 
 /**
@@ -99,7 +103,6 @@ export async function runTests(code: string, language: string, testCases: TestCa
 			}
 		);
 		const executionTime = Date.now() - startTime;
-		setSubmissionStatus(submissionId, "RUNNING");
 
 		const output = JSON.parse(containerStream.toString());
 		for (let testIndex = 0; testIndex < output.length; testIndex++) {
@@ -133,23 +136,16 @@ export async function runTests(code: string, language: string, testCases: TestCa
 	}
 }
 
-// TODO use MySQL instead of an in-memory map?
-const submissions = new Map<string, SubmissionStatus>();
-
-async function setSubmissionStatus(submissionId: string, status: SubmissionStatus): Promise<void> {
-	submissions.set(submissionId, status);
-}
-
-export async function getSubmissionStatus(submissionId: string): Promise<SubmissionStatus | undefined> {
-	return submissions.get(submissionId);
-}
-
 export function isSupportedProgrammingLanguage(language: string): boolean {
 	return runnerImageContexts.has(language);
 }
 
-type SubmissionStatus = "QUEUED" | "RUNNING" | "PASSED" | "FAILED" | "ERRORED";
 type TestOutcome = "PASSED" | "FAILED" | "ERRORED";
+
+interface SubmissionResult {
+	id: string;
+	status: TestOutcome;
+}
 
 interface TestCase {
 	input: any;
