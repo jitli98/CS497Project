@@ -1,7 +1,6 @@
 import express from "express";
 import {
 	evaluateSubmission,
-	getSubmissionStatus,
 	isSupportedProgrammingLanguage
 } from "./submissionTester";
 import bodyParser from "body-parser";
@@ -48,28 +47,11 @@ server.post("/submitSolution", async (req: express.Request, res: express.Respons
 		return;
 	}
 
-	const submissionId = await evaluateSubmission(code, language, challengeId, challengeName, userId, userName);
-	res.status(200).json({
-		submissionId: submissionId
-	});
-});
-
-server.get("/getSubmissionStatus", async (req: express.Request, res: express.Response) => {
-	if (typeof req.query.submissionId != "string") {
-		res.status(400).json({message: "submissionId was not specified."});
-		return;
-	}
-
-	const status = await getSubmissionStatus(req.query.submissionId);
-
-	if (status) {
-		res.status(200).json({
-			status: status
-		});
+	const submissionResult = await evaluateSubmission(code, language, challengeId, challengeName, userId, userName);
+	if (submissionResult.status === "ERRORED") {
+		res.status(500).json(submissionResult);
 	} else {
-		res.status(404).json({
-			message: "Submission not found"
-		});
+		res.status(200).json(submissionResult);
 	}
 });
 
