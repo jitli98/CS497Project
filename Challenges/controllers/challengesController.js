@@ -159,7 +159,10 @@ exports.challengeCreatePost = async function(req, res, next){
                     res.status(500).json({ message: "Challenges service encounted an error while saving challenge to database"});  
                     return;
                 } else { 
-                    res.status(201).json({ message: `Challenge created successfully! Challenge Id: ${newChallenge.id}`});
+                    res.status(201).json({ 
+                        message: `Challenge created successfully! Challenge Id: ${newChallenge.id}`,
+                        challengeId: newChallenge.id
+                    });
                     return;
                 }
             }); 
