@@ -23,6 +23,7 @@ As of now, our current Docker Compose implementation allows for the deployment o
 We are also currently in the process of learning a container orchestration technology - specifically Swarm - that will allow us to deploy and control containers across multiple virtual machines. If time persists, we would wish to be able to run our entire microservice architecture with Docker Swarm which would allow us to achieve higher levels of scalability.
 
 ## Links for each individual video presentation
+* [Team video](https://drive.google.com/file/d/1fhpO0CHQP5QIn2gAEib6Qa9DnmwvVt25/view?usp=sharing)
 * [Gerry Gan](https://youtu.be/Sl-UmJx18_U)
 * [Veronica Gusev]()
 * [Thinh Pham](https://www.youtube.com/watch?v=GN25qLsvLm0)
