@@ -25,7 +25,7 @@ We are also currently in the process of learning a container orchestration techn
 ## Links for each individual video presentation
 * [Gerry Gan](https://youtu.be/Sl-UmJx18_U)
 * [Veronica Gusev]()
-* [Thinh Pham]()
+* [Thinh Pham](https://www.youtube.com/watch?v=GN25qLsvLm0)
 * [Matthew Oslan](https://www.youtube.com/watch?v=sr_culZ4z-g)
 * [Austin Pinto]()
 
