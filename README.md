@@ -28,7 +28,7 @@ We are also currently in the process of learning a container orchestration techn
 * [Veronica Gusev]()
 * [Thinh Pham](https://www.youtube.com/watch?v=GN25qLsvLm0)
 * [Matthew Oslan](https://www.youtube.com/watch?v=sr_culZ4z-g)
-* [Austin Pinto]()
+* [Austin Pinto](https://drive.google.com/file/d/1z3xWy3jI735x_9pFeZwLUeQ2zxoyPtES/view?usp=sharing)
 
 
 ## Running all microserviecs together 
